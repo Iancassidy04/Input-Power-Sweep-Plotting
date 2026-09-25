@@ -17,66 +17,65 @@ for i, file in enumerate(files, 1):
     print(f"{i} = {file.name}")
 
 file_choice = int(input("\nChoose TXT file: "))
-filename_local = files[file_choice - 1]
+filename = files[file_choice - 1]
 
-def plot_sim(filename):
-    # Read file
-    with open(filename, "r") as file:
-        lines = file.readlines()
 
-    # Store data
-    harmonics = {}
-    current_harmonic = None
-    Pin = []
+# Read file
+with open(filename, "r") as file:
+    lines = file.readlines()
 
-    # Read ADS ASCII data
-    for line in lines:
-        line = line.strip()
+# Store data
+harmonics = {}
+current_harmonic = None
+Pin = []
 
-        if not line:
-            continue
+# Read ADS ASCII data
+for line in lines:
+    line = line.strip()
 
-        # Find harmonic
-        if "plot_vs" in line:
-            start = line.find("Pdbm[") + 5
-            end = line.find("]", start)
+    if not line:
+        continue
 
-            current_harmonic = int(line[start:end])
-            harmonics[current_harmonic] = []
+    # Find harmonic
+    if "plot_vs" in line:
+        start = line.find("Pdbm[") + 5
+        end = line.find("]", start)
 
-            continue
+        current_harmonic = int(line[start:end])
+        harmonics[current_harmonic] = []
 
-        # Read data
-        try:
-            values = line.split()
+        continue
 
-            if len(values) == 2:
-                pin = float(values[0])
-                pout = float(values[1])
+    # Read data
+    try:
+        values = line.split()
 
-                if current_harmonic == 1:
-                    Pin.append(pin)
+        if len(values) == 2:
+            pin = float(values[0])
+            pout = float(values[1])
 
-                harmonics[current_harmonic].append(pout)
+            if current_harmonic == 1:
+                Pin.append(pin)
 
-        except ValueError:
-            continue
+            harmonics[current_harmonic].append(pout)
 
-    Pin = np.array(Pin)
+    except ValueError:
+        continue
 
-    # Create plot
-    plt.figure()
+Pin = np.array(Pin)
 
-    for harmonic, values in harmonics.items():
-        values = np.array(values)
+# Create plot
+plt.figure()
 
-        plt.plot(Pin, values, marker="o", markersize=4, linewidth=1.5, label=f"M{harmonic}")
+for harmonic, values in harmonics.items():
+    values = np.array(values)
 
-    plt.xlabel("Input Power (dBm)")
-    plt.ylabel("Output Power (dBm)")
-    plt.title("ADS Harmonic Output Power vs Input Power")
-    plt.grid(True)
-    plt.legend()
-    plt.show()
+    plt.plot(Pin, values, marker="o", markersize=4, linewidth=1.5, label=f"M{harmonic}")
 
-plot_sim(filename_local)
+plt.xlabel("Input Power (dBm)")
+plt.ylabel("Output Power (dBm)")
+plt.title("ADS Harmonic Output Power vs Input Power")
+plt.grid(True)
+plt.legend()
+plt.show()
+

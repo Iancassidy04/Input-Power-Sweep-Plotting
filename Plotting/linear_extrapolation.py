@@ -18,214 +18,211 @@ for i, file in enumerate(files, 1):
     print(f"{i} = {file.name}")
 
 file_choice = int(input("\nChoose CSV: "))
-filename_local = files[file_choice - 1]
+filename = files[file_choice - 1]
 
-def plot_test(filename):
-    df = pd.read_csv(filename)
+df = pd.read_csv(filename)
 
-    # Data Dictionarys
-    calibrated_data_set = {
-        "Conversion loss": {},
-        "Output Power": {},
-        "Harmonic Ratio": {},
-        "Slope": {}
-    }
+# Data Dictionarys
+calibrated_data_set = {
+    "Conversion loss": {},
+    "Output Power": {},
+    "Harmonic Ratio": {},
+    "Slope": {}
+}
 
-    uncalibrated_data_set = {
-        "Conversion loss": {},
-        "Output Power": {},
-        "Harmonic Ratio": {},
-        "Slope": {}
-    }
+uncalibrated_data_set = {
+    "Conversion loss": {},
+    "Output Power": {},
+    "Harmonic Ratio": {},
+    "Slope": {}
+}
 
-    Pin = df["Pin"]
+Pin = df["Pin"]
 
-    # Organize CSV Columns
-    for column in df.columns:
-        if "_" not in column:
-            continue
+# Organize CSV Columns
+for column in df.columns:
+    if "_" not in column:
+        continue
 
-        parts = column.split("_")
-        calibration = parts[0]
-        harmonic = parts[1]
-        measurement = parts[2]
+    parts = column.split("_")
+    calibration = parts[0]
+    harmonic = parts[1]
+    measurement = parts[2]
 
-        if calibration == "c":
-            data_set = calibrated_data_set
+    if calibration == "c":
+        data_set = calibrated_data_set
 
-        elif calibration == "u":
-            data_set = uncalibrated_data_set
+    elif calibration == "u":
+        data_set = uncalibrated_data_set
 
-        else:
-            continue
+    else:
+        continue
 
-        if measurement == "CL":
-            data_set["Conversion loss"][harmonic] = df[column]
+    if measurement == "CL":
+        data_set["Conversion loss"][harmonic] = df[column]
 
-        elif measurement == "P":
-            data_set["Output Power"][harmonic] = df[column]
+    elif measurement == "P":
+        data_set["Output Power"][harmonic] = df[column]
 
-        elif measurement == "HR":
-            data_set["Harmonic Ratio"][harmonic] = df[column]
+    elif measurement == "HR":
+        data_set["Harmonic Ratio"][harmonic] = df[column]
 
-        elif measurement == "S":
-            if harmonic in ["M2", "M3"]:         # Only M2 and M3
-                data_set["Slope"][harmonic] = df[column]
+    elif measurement == "S":
+        if harmonic in ["M2", "M3"]:         # Only M2 and M3
+            data_set["Slope"][harmonic] = df[column]
 
-    # Plot Options (User Input)
-    measurements = {
-        "1": ("Conversion loss", "Conversion Loss (dB)"),
-        "2": ("Harmonic Ratio", "Harmonic Ratio (dB)"),
-        "3": ("Output Power", "Output Power (dBm)"),
-        "4": ("Slope", "Slope (dB/dB)")
-    }
+# Plot Options (User Input)
+measurements = {
+    "1": ("Conversion loss", "Conversion Loss (dB)"),
+    "2": ("Harmonic Ratio", "Harmonic Ratio (dB)"),
+    "3": ("Output Power", "Output Power (dBm)"),
+    "4": ("Slope", "Slope (dB/dB)")
+}
 
-    # Ask calibration
-    print("\nCalibration:")
-    print("1 = Calibrated")
-    print("2 = Uncalibrated")
-    print("3 = Calibrated vs Uncalibrated")
+# Ask calibration
+print("\nCalibration:")
+print("1 = Calibrated")
+print("2 = Uncalibrated")
+print("3 = Calibrated vs Uncalibrated")
 
-    cal_choice = input("\nChoose: ").strip()
+cal_choice = input("\nChoose: ").strip()
 
-    while cal_choice not in ["1", "2", "3"]:
-        cal_choice = input("Enter 1, 2, or 3: ").strip()
+while cal_choice not in ["1", "2", "3"]:
+    cal_choice = input("Enter 1, 2, or 3: ").strip()
 
-    # Ask measurement type
-    print("\nMeasurements:")
-    print("1 = Conversion Loss")
-    print("2 = Harmonic Ratio")
-    print("3 = Output Power")
-    print("4 = Slope")
-    print("\nEnter any combination.")
-    print("Examples: 1   12   234   41")
+# Ask measurement type
+print("\nMeasurements:")
+print("1 = Conversion Loss")
+print("2 = Harmonic Ratio")
+print("3 = Output Power")
+print("4 = Slope")
+print("\nEnter any combination.")
+print("Examples: 1   12   234   41")
 
-    measurement_choice = input("\nChoose: ").strip()
+measurement_choice = input("\nChoose: ").strip()
 
-    # Allow commas and spaces
+# Allow commas and spaces
+measurement_choice = (
+    measurement_choice
+    .replace(",", "")
+    .replace(" ", "")
+)
+
+# Remove duplicates while preserving order
+measurement_choice = "".join(
+    dict.fromkeys(measurement_choice)
+)
+
+while (
+    not measurement_choice
+    or any(x not in measurements for x in measurement_choice)
+):
+    measurement_choice = input(
+        "Enter a combination of 1, 2, 3, and 4: "
+    ).strip()
+
     measurement_choice = (
         measurement_choice
         .replace(",", "")
         .replace(" ", "")
     )
 
-    # Remove duplicates while preserving order
     measurement_choice = "".join(
         dict.fromkeys(measurement_choice)
     )
 
-    while (
-        not measurement_choice
-        or any(x not in measurements for x in measurement_choice)
-    ):
-        measurement_choice = input(
-            "Enter a combination of 1, 2, 3, and 4: "
-        ).strip()
+# Select data
+if cal_choice == "1":
+    data_sets = [
+        ("Calibrated", calibrated_data_set)
+    ]
 
-        measurement_choice = (
-            measurement_choice
-            .replace(",", "")
-            .replace(" ", "")
-        )
+elif cal_choice == "2":
+    data_sets = [
+        ("Uncalibrated", uncalibrated_data_set)
+    ]
 
-        measurement_choice = "".join(
-            dict.fromkeys(measurement_choice)
-        )
+else:
+    data_sets = [
+        ("Calibrated", calibrated_data_set),
+        ("Uncalibrated", uncalibrated_data_set)
+    ]
 
-    # Select data
-    if cal_choice == "1":
-        data_sets = [
-            ("Calibrated", calibrated_data_set)
-        ]
+# Ask extrapolation
+print("\nExtrapolation:")
+print("y = Add linear extrapolation")
+print("n = No extrapolation")
 
-    elif cal_choice == "2":
-        data_sets = [
-            ("Uncalibrated", uncalibrated_data_set)
-        ]
+extrapolation_choice = input("\nChoose: ").strip().lower()
 
-    else:
-        data_sets = [
-            ("Calibrated", calibrated_data_set),
-            ("Uncalibrated", uncalibrated_data_set)
-        ]
+while extrapolation_choice not in ["y", "n"]:
+    extrapolation_choice = input("Enter y or n: ").strip().lower()
 
-    # Ask extrapolation
-    print("\nExtrapolation:")
-    print("y = Add linear extrapolation")
-    print("n = No extrapolation")
+if extrapolation_choice == "y":
+    lower_bound = float(
+        input("\nEnter lower bound for extrapolation (dBm): ")
+    )
 
-    extrapolation_choice = input("\nChoose: ").strip().lower()
+    upper_bound = float(
+        input("Enter upper bound for extrapolation (dBm): ")
+    )
 
-    while extrapolation_choice not in ["y", "n"]:
-        extrapolation_choice = input("Enter y or n: ").strip().lower()
-
-    if extrapolation_choice == "y":
+    while upper_bound <= lower_bound:
+        print("Upper bound must be greater than lower bound.")
         lower_bound = float(
-            input("\nEnter lower bound for extrapolation (dBm): ")
+            input("Enter lower bound for extrapolation (dBm): ")
         )
 
         upper_bound = float(
             input("Enter upper bound for extrapolation (dBm): ")
         )
 
-        while upper_bound <= lower_bound:
-            print("Upper bound must be greater than lower bound.")
-            lower_bound = float(
-                input("Enter lower bound for extrapolation (dBm): ")
-            )
+# Create plots
+for choice in measurement_choice:
+    measurement, ylabel = measurements[choice]
 
-            upper_bound = float(
-                input("Enter upper bound for extrapolation (dBm): ")
-            )
+    plt.figure()
+    for set_name, data_set in data_sets:
+        data = data_set[measurement]
+        for harmonic, values in data.items():
+            if cal_choice == "3":
+                label = f"{set_name} {harmonic}"
+            else:
+                label = harmonic
+            plt.plot(Pin, values, marker="o", markersize=4, linewidth=1.5, label=label)
 
-    # Create plots
-    for choice in measurement_choice:
-        measurement, ylabel = measurements[choice]
+            # Linear extrapolation
+            if extrapolation_choice == "y":
+                x = np.array(Pin)
+                y = np.array(values)
+                valid = np.isfinite(x) & np.isfinite(y)
+                x = x[valid]
+                y = y[valid]
 
-        plt.figure()
-        for set_name, data_set in data_sets:
-            data = data_set[measurement]
-            for harmonic, values in data.items():
-                if cal_choice == "3":
-                    label = f"{set_name} {harmonic}"
-                else:
-                    label = harmonic
-                plt.plot(Pin, values, marker="o", markersize=4, linewidth=1.5, label=label)
+                if len(x) >= 2:
+                    slope, intercept = np.polyfit(x, y, 1)
+                    x_extra = np.linspace(lower_bound, upper_bound, 100)
 
-                # Linear extrapolation
-                if extrapolation_choice == "y":
-                    x = np.array(Pin)
-                    y = np.array(values)
-                    valid = np.isfinite(x) & np.isfinite(y)
-                    x = x[valid]
-                    y = y[valid]
+                    y_extra = slope * x_extra + intercept
 
-                    if len(x) >= 2:
-                        slope, intercept = np.polyfit(x, y, 1)
-                        x_extra = np.linspace(lower_bound, upper_bound, 100)
+                    plt.plot(x_extra, y_extra, linestyle="--", linewidth=1.5, label=f"{label} Linear Fit")
 
-                        y_extra = slope * x_extra + intercept
+    # Title
+    if cal_choice == "1":
+        title_calibration = "Calibrated"
 
-                        plt.plot(x_extra, y_extra, linestyle="--", linewidth=1.5, label=f"{label} Linear Fit")
+    elif cal_choice == "2":
+        title_calibration = "Uncalibrated"
 
-        # Title
-        if cal_choice == "1":
-            title_calibration = "Calibrated"
+    else:
+        title_calibration = "Calibrated vs Uncalibrated"
 
-        elif cal_choice == "2":
-            title_calibration = "Uncalibrated"
-
-        else:
-            title_calibration = "Calibrated vs Uncalibrated"
-
-        plt.title(
-            f"{title_calibration} {measurement} "
-            f"vs Input Power for {DUT}"
-        )
-        plt.xlabel("Input Power (dBm)")
-        plt.ylabel(ylabel)
-        plt.grid(True)
-        plt.legend()
-        plt.show()
-
-plot_test(filename_local)
+    plt.title(
+        f"{title_calibration} {measurement} "
+        f"vs Input Power for {DUT}"
+    )
+    plt.xlabel("Input Power (dBm)")
+    plt.ylabel(ylabel)
+    plt.grid(True)
+    plt.legend()
+    plt.show()
