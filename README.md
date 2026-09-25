@@ -49,29 +49,29 @@ An automated input power sweep will be developed using an Agilent E4422B ESG sig
 
 ## User Specified Parameters
 
-Fundamental frequency
-Starting input power
-Final input power
-Input power step
-Number of harmonics
-Resolution bandwidth
-Analyzer span
+- Fundamental frequency
+- Starting input power
+- Final input power
+- Input power step
+- Number of harmonics
+- Resolution bandwidth
+- Analyzer span
 
 ## Example:
 
-Fundamental Frequency: 525 MHz
-Input Power:           -30 to +10 dBm
-Power Step:            0.5 dB
-Harmonics:             f0 - 4f0
-Resolution Bandwidth:  1 kHz
-Span:                  10 kHz
+- Fundamental Frequency: 525 MHz
+- Input Power:           -30 to +10 dBm
+- Power Step:            0.5 dB
+- Harmonics:             f0 - 4f0
+- Resolution Bandwidth:  1 kHz
+- Span:                  10 kHz
 
 For each input power level, the signal analyzer will perform a peak search at the fundamental frequency and its harmonics:
 
-f0
-2f0
-3f0
-4f0
+- f0
+- 2f0
+- 3f0
+- 4f0
 
 The input power and measured output powers will then be saved to a raw data file.
 
@@ -79,15 +79,15 @@ The input power and measured output powers will then be saved to a raw data file
 
 The raw instrument data will be processed automatically to calculate:
 
-Conversion Loss
-Harmonic Ratio
-Harmonic Slope
+- Conversion Loss
+- Harmonic Ratio
+- Harmonic Slope
 
 From:
-Fundamental output power
-2nd harmonic output power
-3rd harmonic output power
-4th harmonic output power
+- Fundamental output power
+- 2nd harmonic output power
+- 3rd harmonic output power
+- 4th harmonic output power
 
 for both the DUT and a THRU test board.
 
@@ -109,12 +109,12 @@ harmonic-transponder/
 
 The final system will:
 
-Configure the signal generator and signal analyzer
-Sweep the input power
-Measure the fundamental and harmonic output powers
-Save the raw measurement data
-Process and calibrate the data
-Calculate harmonic performance metrics
-Generate plots for analysis
+- Configure the signal generator and signal analyzer
+- Sweep the input power
+- Measure the fundamental and harmonic output powers
+- Save the raw measurement data
+- Process and calibrate the data
+- Calculate harmonic performance metrics
+- Generate plots for analysis
 
 This will provide a repeatable measurement and analysis workflow for characterizing discrete-component harmonic transponders.
