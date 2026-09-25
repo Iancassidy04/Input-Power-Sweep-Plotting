@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # Find ADS data
-data_folder = Path(__file__).parent.parent / "data" / "ads"
+data_folder = Path(__file__).parent.parent / "data" / "ADS"
 files = list(data_folder.glob("*.txt"))
 
 print("\nADS Simulation Files:")

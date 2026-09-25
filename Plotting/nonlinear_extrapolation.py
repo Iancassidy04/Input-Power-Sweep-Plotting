@@ -10,7 +10,7 @@ from pathlib import Path
 
 DUT = "MMDL S23"        # Device Name: First 4 chars of part# + month and day fabricated
 
-data_folder = Path(__file__).parent.parent / "data"
+data_folder = Path(__file__).parent.parent / "data" / "test_processed"
 files = list(data_folder.glob("*.csv"))
 print("\nCSV Files:")
 

@@ -15,4 +15,4 @@ for i in range(3)
 
 repeat for other 3 tests
 
-add CSV to data/processed
+add CSV to "data" / "test_processed"
