@@ -6,10 +6,19 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 DUT = "MMDL S23"        # Device Name: First 4 chars of part# + month and day fabricated
 
-filename = r"C:\Users\ianbc\OneDrive - University of Vermont\Saw Research\IAN_SAW\Code\Input Power Sweep Plotting\2026_09_24_PIN_SWEEP_MMDLS23.csv"
+data_folder = Path(__file__).parent / "data"
+files = list(data_folder.glob("*.csv"))
+print("\nCSV Files:")
+
+for i, file in enumerate(files, 1):
+    print(f"{i} = {file.name}")
+
+file_choice = int(input("\nChoose CSV: "))
+filename = files[file_choice - 1]
 df = pd.read_csv(filename)
 
 # Data Dictionarys
