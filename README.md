@@ -93,6 +93,7 @@ for both the DUT and a THRU test board.
 
 ## Planned Repository Structure
 
+```text
 harmonic-transponder/
 ├── data/
 │   ├── raw/
@@ -102,7 +103,7 @@ harmonic-transponder/
 ├── processing/
 ├── plotting/
 └── README.md
-
+```
 
 ## End Goal
 
