@@ -1,0 +1,18 @@
+recieve data from auto_pin_sweep
+
+create empty csv and name yyyy_mm_dd_PIN_SWEEP_DUTNAME
+
+Calibrate data with nonsense
+
+for i in range(3)
+    PMf0 = uncalibrated power data for DUT at mode (i+1)
+    calculate CL
+    append to csv with column name u_M(i+1)_CL
+
+    Cal_PMf0 = calibrated power data for DUT at mode (i+1)
+    calcularte CL
+    append to csv with column name c_M(i+1)_CL
+
+repeat for other 3 tests
+
+add CSV to data/processed
